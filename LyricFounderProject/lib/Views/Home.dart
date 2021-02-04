@@ -1,16 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class Home extends StatelessWidget {
+  // api key cbce047af3f2e4571ae6643740fe5c40
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white, body: ColumnPrincipal());
+    return Scaffold(backgroundColor: Colors.white, body: columnPrincipal());
   }
 
   // Construção da tela
-  Widget ColumnPrincipal() {
+  Widget columnPrincipal() {
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
             labelTitulo(),
             inputs(),
             btnPesquisarMusica(),
-            RecCentral()
+            recCentral()
           ]),
     );
   }
@@ -35,12 +35,17 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget RecCentral() {
+  Widget recCentral() {
     return Expanded(
       child: Container(
         alignment: Alignment.topCenter,
+        padding: EdgeInsets.all(10),
         color: Color(0xFFEFF2C0),
-        child: Text('Teste de texto que será a letra da musica'),
+        child: Text(
+          'Teste de letra teste Po;oa0',
+          style: TextStyle(
+              fontFamily: 'Inkfree', fontSize: 16, color: Colors.black),
+        ),
       ),
     );
   }
@@ -50,7 +55,7 @@ class Home extends StatelessWidget {
       children: [
         SizedBox(height: 8),
         TextField(
-          obscureText: true,
+          obscureText: false,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Nome da música',
@@ -58,7 +63,7 @@ class Home extends StatelessWidget {
         ),
         SizedBox(height: 5),
         TextField(
-          obscureText: true,
+          obscureText: false,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Artista',
