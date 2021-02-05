@@ -1,15 +1,36 @@
+import 'package:app/Controllers/LyricService.dart';
+import 'package:app/Models/Mus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class Home extends StatelessWidget {
-  // api key cbce047af3f2e4571ae6643740fe5c40
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  TextEditingController artistaController = TextEditingController();
+  TextEditingController musicacontroller = TextEditingController();
+  String lyric = '';
+
+  @override
+  void initState() {
+    super.initState();
+    EasyLoading.init();
+  }
+
+  // @override
+  // void deactivate() {
+  //   EasyLoading.dismiss();
+  //   super.deactivate();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white, body: columnPrincipal());
   }
 
-  // Construção da tela
   Widget columnPrincipal() {
     return Padding(
       padding: EdgeInsets.all(20),
@@ -42,7 +63,7 @@ class Home extends StatelessWidget {
         padding: EdgeInsets.all(10),
         color: Color(0xFFEFF2C0),
         child: Text(
-          'Teste de letra teste Po;oa0',
+          lyric,
           style: TextStyle(
               fontFamily: 'Inkfree', fontSize: 16, color: Colors.black),
         ),
@@ -55,6 +76,7 @@ class Home extends StatelessWidget {
       children: [
         SizedBox(height: 8),
         TextField(
+          controller: musicacontroller,
           obscureText: false,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
@@ -63,6 +85,7 @@ class Home extends StatelessWidget {
         ),
         SizedBox(height: 5),
         TextField(
+          controller: artistaController,
           obscureText: false,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
@@ -78,10 +101,25 @@ class Home extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(color: Colors.red)),
-        onPressed: () {},
+        onPressed: () {
+          loadData();
+        },
         color: Colors.red,
         textColor: Colors.white,
         child: Text("Pesquisar música".toUpperCase(),
             style: TextStyle(fontSize: 14)));
+  }
+
+  void loadData() {
+    setState(() {
+      EasyLoading.show();
+      final service = LyricService();
+      Future<Mus> musica = service.getLyric(
+          artist: artistaController.text, song: musicacontroller.text);
+      musica.then((value) {
+        lyric = value.text;
+        EasyLoading.dismiss();
+      });
+    });
   }
 }
