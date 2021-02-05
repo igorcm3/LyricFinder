@@ -111,15 +111,15 @@ class _HomeState extends State<Home> {
   }
 
   void loadData() {
-    setState(() {
-      EasyLoading.show();
-      final service = LyricService();
-      Future<Mus> musica = service.getLyric(
-          artist: artistaController.text, song: musicacontroller.text);
-      musica.then((value) {
+    EasyLoading.show();
+    final service = LyricService();
+    Future<Mus> musica = service.getLyric(
+        artist: artistaController.text, song: musicacontroller.text);
+    musica.then((value) {
+      setState(() {
         lyric = value.text;
-        EasyLoading.dismiss();
       });
+      EasyLoading.dismiss();
     });
   }
 }
