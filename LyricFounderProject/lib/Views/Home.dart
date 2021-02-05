@@ -12,7 +12,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController artistaController = TextEditingController();
   TextEditingController musicacontroller = TextEditingController();
-  String lyric = '';
+  String lyric = 'Busque por uma música =)';
+  FocusScopeNode currentFocus;
 
   @override
   void initState() {
@@ -20,39 +21,71 @@ class _HomeState extends State<Home> {
     EasyLoading.init();
   }
 
-  // @override
-  // void deactivate() {
-  //   EasyLoading.dismiss();
-  //   super.deactivate();
-  // }
+  @override
+  void deactivate() {
+    EasyLoading.dismiss();
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white, body: columnPrincipal());
-  }
-
-  Widget columnPrincipal() {
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 40,
-            ),
-            labelTitulo(),
-            inputs(),
-            btnPesquisarMusica(),
-            recCentral()
-          ]),
+    currentFocus = FocusScope.of(context);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: columnPrincipal(),
     );
   }
 
+  Widget columnPrincipal() {
+    return SingleChildScrollView(
+        child: SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 37,
+              ),
+              labelTitulo(),
+              inputs(),
+              recCentral()
+            ]),
+      ),
+    ));
+  }
+
   Widget labelTitulo() {
-    return Text(
-      'Lyric finder',
-      style: TextStyle(color: Colors.black, fontSize: 32),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          child: Row(
+            children: [
+              //Icon(Icons.ac_unit),
+              Image(
+                image: AssetImage(
+                    'assets/icons/favicon_96x96_created_by_logaster.png'),
+                width: 28,
+                height: 28,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                'Lyric finder',
+                style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: 'Inkfree',
+                    fontStyle: FontStyle.normal),
+              ),
+            ],
+          ),
+        ),
+        Container(child: btnPesquisarMusica())
+      ],
     );
   }
 
@@ -61,11 +94,13 @@ class _HomeState extends State<Home> {
       child: Container(
         alignment: Alignment.topCenter,
         padding: EdgeInsets.all(10),
-        color: Color(0xFFEFF2C0),
-        child: Text(
-          lyric,
-          style: TextStyle(
-              fontFamily: 'Inkfree', fontSize: 16, color: Colors.black),
+        color: Color(0xFFF6F5AE), // EFF2C0, E6F9AF, F5F749,
+        child: SingleChildScrollView(
+          child: Text(
+            lyric,
+            style: TextStyle(
+                fontFamily: 'GOTHIC', fontSize: 16, color: Colors.black),
+          ),
         ),
       ),
     );
@@ -79,19 +114,22 @@ class _HomeState extends State<Home> {
           controller: musicacontroller,
           obscureText: false,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Nome da música',
-          ),
+              border: OutlineInputBorder(),
+              labelText: 'Nome da música',
+              isDense: true, // Added this
+              contentPadding: EdgeInsets.all(12)),
         ),
         SizedBox(height: 5),
         TextField(
           controller: artistaController,
           obscureText: false,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Artista',
-          ),
+              border: OutlineInputBorder(),
+              labelText: 'Artista',
+              isDense: true, // Added this
+              contentPadding: EdgeInsets.all(15)),
         ),
+        SizedBox(height: 10)
       ],
     );
   }
@@ -102,12 +140,28 @@ class _HomeState extends State<Home> {
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(color: Colors.red)),
         onPressed: () {
+          setState(() {
+            lyric = 'Buscando...';
+          });
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
           loadData();
         },
         color: Colors.red,
         textColor: Colors.white,
-        child: Text("Pesquisar música".toUpperCase(),
-            style: TextStyle(fontSize: 14)));
+        child: Row(
+          children: [
+            Text("Buscar".toUpperCase(), style: TextStyle(fontSize: 14)),
+            SizedBox(
+              width: 7,
+            ),
+            Icon(
+              Icons.search,
+              color: Colors.white,
+            )
+          ],
+        ));
   }
 
   void loadData() {
